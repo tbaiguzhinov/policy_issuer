@@ -40,9 +40,9 @@ urlpatterns = [
         views.CustomerCreateView.as_view(),
         name='customer-create'
     ),
-    # path(
-    #     'customers/<int:pk>/',
-    #     views.CustomerDetail.as_view(),
-    #     name='customer-detail'
-    # ),
+    path(
+        'quote/',
+        views.QuoteCreateView.as_view(),
+        name='quote-create'
+    ),
 ]
