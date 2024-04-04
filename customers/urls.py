@@ -42,7 +42,7 @@ urlpatterns = [
     ),
     path(
         'quote/',
-        views.QuoteCreateView.as_view(),
-        name='quote-create'
+        views.QuoteView.as_view(),
+        name='quote-create-update'
     ),
 ]
