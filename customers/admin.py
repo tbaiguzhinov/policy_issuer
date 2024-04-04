@@ -12,7 +12,7 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(Policy)
 class PolicyAdmin(admin.ModelAdmin):
     list_display = [
-        'policy_number',
+        'id',
         'type',
         'premium',
         'cover',
@@ -20,4 +20,4 @@ class PolicyAdmin(admin.ModelAdmin):
         'customer',
         'created_at'
     ]
-    search_fields = ['policy_number', 'type']
+    search_fields = ['id', 'type']
