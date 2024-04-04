@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from django.db import models
 
 from customers.constants import PolicyStateChoices
@@ -21,11 +19,6 @@ class Customer(models.Model):
 
 
 class Policy(models.Model):
-    policy_number = models.UUIDField(
-        primary_key=True,
-        default=uuid4,
-        editable=False
-    )
     type = models.CharField(max_length=100)
     premium = models.IntegerField()
     cover = models.IntegerField()
@@ -50,4 +43,4 @@ class Policy(models.Model):
         unique_together = ['type', 'customer', 'premium', 'cover']
 
     def __str__(self):
-        return str(self.policy_number)
+        return str(self.id)
