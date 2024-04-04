@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from customers.models import Customer
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'dob', 'created_at']
+    search_fields = ['first_name', 'last_name']
