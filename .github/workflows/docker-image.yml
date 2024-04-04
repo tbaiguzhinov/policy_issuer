@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build and run the Docker Compose services
-        run: docker-compose up --build
+        run: docker-compose up -d --build
 
   test:
     runs-on: ubuntu-latest
