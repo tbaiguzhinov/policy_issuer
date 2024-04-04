@@ -1,13 +1,13 @@
 from django.http import JsonResponse
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import permissions
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 from drf_yasg import openapi
-from rest_framework import serializers
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, serializers
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
 
 from customers.models import Customer, Policy
 from customers.serializers import (CustomerSerializer, PolicyCreateSerializer,
-                                   PolicyUpdateSerializer, PolicyListSeriazlier)
+                                   PolicyListSeriazlier,
+                                   PolicyUpdateSerializer)
 
 
 class CustomerCreateView(CreateAPIView):
@@ -67,3 +67,17 @@ class PolicyListView(ListAPIView):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return JsonResponse(serializer.data, safe=False, status=200)
+
+
+class PolicyDetailView(GenericAPIView):
+    queryset = Policy.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        policy_id = kwargs.get('policy_id')
+        try:
+            policy = Policy.objects.get(id=policy_id)
+        except Policy.DoesNotExist:
+            return JsonResponse(['Policy not found'], safe=False, status=400)
+        serializer = PolicyListSeriazlier(policy)
+        return JsonResponse(serializer.data, status=200)

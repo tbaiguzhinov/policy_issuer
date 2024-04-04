@@ -49,5 +49,10 @@ urlpatterns = [
         'policies/',
         views.PolicyListView.as_view(),
         name='policy-list'
+    ),
+    path(
+        'policies/<int:policy_id>/',
+        views.PolicyDetailView.as_view(),
+        name='policy-detail'
     )
 ]

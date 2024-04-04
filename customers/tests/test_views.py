@@ -160,3 +160,38 @@ class PolicyListViewTest(APITestCase):
         response = self.client.get(url, {'customer_id': 999})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(), ['Customer not found'])
+
+
+class PolicyDetailViewTest(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = User.objects.create_superuser(
+            username='admin',
+            password='adminpassword'
+        )
+        self.client.force_login(self.admin_user)
+        self.customer = Customer.objects.create(
+            first_name='John',
+            last_name='Doe',
+            dob=date(1990, 1, 1)
+        )
+        self.policy = Policy.objects.create(
+            customer=self.customer,
+            type='life',
+            premium=100,
+            cover=100000
+        )
+
+    def test_get_policy_detail(self):
+        url = reverse('policy-detail', kwargs={'policy_id': self.policy.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        serializer = PolicyListSeriazlier(self.policy)
+        self.assertEqual(response.json(), serializer.data)
+
+    def test_get_policy_detail_invalid(self):
+        url = reverse('policy-detail', kwargs={'policy_id': 999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), ['Policy not found'])
