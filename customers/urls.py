@@ -45,4 +45,9 @@ urlpatterns = [
         views.QuoteView.as_view(),
         name='quote-create-update'
     ),
+    path(
+        'policies/',
+        views.PolicyListView.as_view(),
+        name='policy-list'
+    )
 ]

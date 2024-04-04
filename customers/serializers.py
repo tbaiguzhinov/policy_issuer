@@ -52,3 +52,19 @@ class PolicyUpdateSerializer(serializers.ModelSerializer):
             'quote_id',
             'state',
         ]
+
+
+class PolicyListSeriazlier(serializers.ModelSerializer):
+    customer_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Policy
+        fields = [
+            'id',
+            'type',
+            'premium',
+            'cover',
+            'state',
+            'customer',
+            'customer_id'
+        ]

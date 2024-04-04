@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from customers.models import Customer, Policy
-from customers.serializers import CustomerSerializer
+from customers.serializers import CustomerSerializer, PolicyListSeriazlier
 
 
 class CustomerCreateViewTest(APITestCase):
@@ -125,3 +125,38 @@ class QuoteUpdateViewTest(APITestCase):
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(), ['Policy not found'])
+
+
+class PolicyListViewTest(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = User.objects.create_superuser(
+            username='admin',
+            password='adminpassword'
+        )
+        self.client.force_login(self.admin_user)
+        self.customer = Customer.objects.create(
+            first_name='John',
+            last_name='Doe',
+            dob=date(1990, 1, 1)
+        )
+        self.policy = Policy.objects.create(
+            customer=self.customer,
+            type='life',
+            premium=100,
+            cover=100000
+        )
+
+    def test_get_policy_list(self):
+        url = reverse('policy-list')
+        response = self.client.get(url, {'customer_id': self.customer.id})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        serializer = PolicyListSeriazlier(self.policy)
+        self.assertEqual(response.json(), [serializer.data])
+
+    def test_get_policy_list_invalid_customer(self):
+        url = reverse('policy-list')
+        response = self.client.get(url, {'customer_id': 999})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), ['Customer not found'])
