@@ -2,7 +2,7 @@ from datetime import date
 
 from django.test import TestCase
 
-from customers.models import Customer
+from customers.models import Customer, Policy
 
 
 class CustomerModelTest(TestCase):
@@ -30,3 +30,28 @@ class CustomerModelTest(TestCase):
             dob=date(1985, 12, 31)
         )
         self.assertIsNotNone(customer.created_at)
+
+
+class PolicyModelTest(TestCase):
+    def setUp(self):
+        self.customer1 = Customer.objects.create(
+            first_name='John',
+            last_name='Doe',
+            dob=date(1990, 1, 1)
+        )
+        self.policy1 = Policy.objects.create(
+            type='Life',
+            premium=100,
+            cover=100000,
+            state='New',
+            customer=self.customer1,
+        )
+
+    def test_policy_str_representation(self):
+        self.assertEqual(str(self.policy1), str(self.policy1.policy_number))
+
+    def test_policy_unique_together(self):
+        self.assertEqual(
+            self.customer1.policies.count(),
+            1,
+        )

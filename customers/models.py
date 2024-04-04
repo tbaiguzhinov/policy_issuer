@@ -35,7 +35,11 @@ class Policy(models.Model):
         default=PolicyStateChoices.NEW
     )
 
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='policies'
+    )
 
     policy_start_date = models.DateField(null=True, blank=True)
     policy_end_date = models.DateField(null=True, blank=True)
@@ -46,4 +50,4 @@ class Policy(models.Model):
         unique_together = ['type', 'customer', 'premium', 'cover']
 
     def __str__(self):
-        return self.policy_number
+        return str(self.policy_number)
