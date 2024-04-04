@@ -12,8 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 import dj_database_url
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -89,6 +90,23 @@ DATABASES = {
         conn_max_age=600,
         conn_health_checks=True,
     )
+}
+
+REST_FRAMEWORK = {
+    'DATE_INPUT_FORMATS': ["%d-%m-%Y"],
+    'DATE_FORMAT': "%d-%m-%Y",
+}
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_INFO': 'issuer.urls.swagger_info',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+        },
+    },
 }
 
 # Password validation
