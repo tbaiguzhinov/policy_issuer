@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from customers.models import Customer, Policy
 
@@ -10,7 +11,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 @admin.register(Policy)
-class PolicyAdmin(admin.ModelAdmin):
+class PolicyAdmin(SimpleHistoryAdmin):
     list_display = [
         'id',
         'type',
@@ -18,6 +19,6 @@ class PolicyAdmin(admin.ModelAdmin):
         'cover',
         'state',
         'customer',
-        'created_at'
+        'created_at',
     ]
     search_fields = ['id', 'type']
