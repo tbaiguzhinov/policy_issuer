@@ -36,4 +36,5 @@ jobs:
 
       - name: Deploy to AWS
         run: |
+          cd /home/ubuntu/policy_issuer/
           docker compose up -d --build
