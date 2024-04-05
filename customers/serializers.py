@@ -66,5 +66,18 @@ class PolicyListSeriazlier(serializers.ModelSerializer):
             'cover',
             'state',
             'customer',
-            'customer_id'
+            'customer_id',
+            'policy_start_date',
+            'policy_end_date',
+        ]
+
+
+class PolicyHistorySeriazlier(serializers.ModelSerializer):
+    order_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Policy
+        fields = [
+            'order_id',
+            'history',
         ]
