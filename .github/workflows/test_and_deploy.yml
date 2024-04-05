@@ -36,6 +36,7 @@ jobs:
 
       - name: Deploy to AWS
         run: |
-          scp -i $SSH_PRIVATE_KEY -r ./* $REMOTE_USER@$REMOTE_HOST
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/key.pem && chmod 600 ~/.ssh/key.pem
+          ssh -i ~/.ssh/key.pem $REMOTE_USER@$REMOTE_HOST
           cd /home/ubuntu/policy_issuer/
           docker compose up -d --build
