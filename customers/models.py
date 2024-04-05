@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from customers.constants import PolicyStateChoices
 
@@ -27,6 +28,7 @@ class Policy(models.Model):
         choices=PolicyStateChoices.CHOICES,
         default=PolicyStateChoices.NEW
     )
+    history = HistoricalRecords()
 
     customer = models.ForeignKey(
         Customer,
