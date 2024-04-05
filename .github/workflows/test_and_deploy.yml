@@ -36,6 +36,7 @@ jobs:
 
       - name: Set up SSH key
         run: |
+          eval `ssh-agent -s`
           echo "$SSH_PRIVATE_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
           ssh-add ssh_key.pem
