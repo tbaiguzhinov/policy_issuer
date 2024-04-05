@@ -20,6 +20,11 @@ jobs:
         run: |
           bandit -r .
           python manage.py test
+      - name: Django Coverage action
+        uses: djangoci/django-coverage-action@v1.0
+        with:
+          django-app: "issuer"
+          minimum-coverage: "86"
 
   # deploy:
   #   runs-on: ubuntu-latest
