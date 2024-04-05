@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -192,6 +192,65 @@ class PolicyDetailViewTest(APITestCase):
 
     def test_get_policy_detail_invalid(self):
         url = reverse('policy-detail', kwargs={'policy_id': 999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), ['Policy not found'])
+
+
+class PolicyHistoryViewTest(APITestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = User.objects.create_superuser(
+            username='admin',
+            password='adminpassword'
+        )
+        self.client.force_login(self.admin_user)
+        self.customer = Customer.objects.create(
+            first_name='John',
+            last_name='Doe',
+            dob=date(1990, 1, 1)
+        )
+        self.policy = Policy.objects.create(
+            customer=self.customer,
+            type='life',
+            premium=100,
+            cover=100000
+        )
+
+    def test_get_policy_history(self):
+        url = reverse('policy-history', kwargs={'policy_id': self.policy.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 1)
+        history_entry = response.json()[0]
+        self.assertEqual(history_entry['state'], self.policy.state)
+        self.assertEqual(
+            datetime.strptime(
+                history_entry['changed_at'],
+                '%Y-%m-%dT%H:%M:%S.%fZ'
+            ).date(),
+            self.policy.history.first().history_date.date()
+        )
+        self.assertEqual(history_entry['user'], 'System')
+
+    def test_get_policy_history_multiple(self):
+        url = reverse('quote-create-update')
+        data = {
+            'quote_id': self.policy.id,
+            'state': 'accepted'
+        }
+        self.client.patch(url, data, format='json')
+
+        url = reverse('policy-history', kwargs={'policy_id': self.policy.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()), 2)
+        history_entry = response.json()[-1]
+        self.assertEqual(history_entry['state'], 'accepted')
+
+    def test_get_policy_history_invalid(self):
+        url = reverse('policy-history', kwargs={'policy_id': 999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(), ['Policy not found'])
