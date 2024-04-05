@@ -48,7 +48,10 @@ class PolicyModelTest(TestCase):
         )
 
     def test_policy_str_representation(self):
-        self.assertEqual(str(self.policy1), str(self.policy1.id))
+        self.assertEqual(
+            str(self.policy1),
+            f'{self.policy1.id}: {self.policy1.type} - {self.policy1.customer}'
+        )
 
     def test_policy_unique_together(self):
         self.assertEqual(

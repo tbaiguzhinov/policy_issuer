@@ -34,7 +34,7 @@ class CustomerCreateViewTest(APITestCase):
         self.assertEqual(customer.last_name, 'Doe')
         self.assertEqual(customer.dob, date(1990, 1, 1))
         self.assertEqual(
-            response.data,
+            response.json(),
             CustomerSerializer(Customer.objects.get()).data
         )
 
@@ -57,7 +57,7 @@ class QuoteCreateViewTest(APITestCase):
     def test_create_quote(self):
         url = reverse('quote-create-update')
         data = {
-            'customer': self.customer.id,
+            'customer_id': self.customer.id,
             'type': 'life',
             'premium': 100,
             'cover': 100000,
@@ -73,7 +73,7 @@ class QuoteCreateViewTest(APITestCase):
     def test_create_quote_invalid(self):
         url = reverse('quote-create-update')
         data = {
-            'customer': self.customer.id,
+            'customer_id': self.customer.id,
             'premium': 100,
             'cover': 100000,
         }
