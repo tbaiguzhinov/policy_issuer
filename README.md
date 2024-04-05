@@ -1,5 +1,7 @@
 # Policy Issuer App
 
+[![Test CI](https://github.com/tbaiguzhinov/policy_issuer/actions/workflows/test_and_deploy.yml/badge.svg?branch=main)](https://github.com/tbaiguzhinov/policy_issuer/actions/workflows/test_and_deploy.yml)
+
 This repository contains a Dockerized Django application built to fulfill the requirements of the API coding test. The application provides endpoints to create customers, generate insurance quotes, and manage policies.
 
 Live API version of the app is deployed to an AWS EC2 server at [http://18.135.45.9/](http://18.135.45.9/). Access to API requires login to Django admin (username: _democrance_, password: _democrance_).
