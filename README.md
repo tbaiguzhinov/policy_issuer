@@ -2,7 +2,9 @@
 
 This repository contains a Dockerized Django application built to fulfill the requirements of the API coding test. The application provides endpoints to create customers, generate insurance quotes, and manage policies.
 
-Live API version of the app is deployed to an AWS EC2 server at [http://18.135.45.9/](http://18.135.45.9/). Access to API requires login to Django admin (username: democrance, password: democrance).
+Live API version of the app is deployed to an AWS EC2 server at [http://18.135.45.9/](http://18.135.45.9/). Access to API requires login to Django admin (username: _democrance_, password: _democrance_).
+
+Tech Stack: Django, PostgreSQL (Sqlite for local dev), Docker, AWS EC2.
 
 ## Setup (Docker version)
 
@@ -55,21 +57,21 @@ To be able to access the admin site, you need to create a superuser profile:
 
 On a running Docker:
 
-    ```bash
-    docker exec -it issuer python3 manage.py createsuperuser
-    ```
+```bash
+docker exec -it issuer python3 manage.py createsuperuser
+```
 
 Without Docker:
 
-    ```bash
-    python3 manage.py createsuperuser
-    ```
+```bash
+python3 manage.py createsuperuser
+```
 
 ## Endpoints
 
 ### 1. Create Customer
 
-- Endpoint: `http://localhost/api/v1/create_customer/`
+- Endpoint: `http://localhost:8000/api/v1/create_customer/`
 - Method: POST
 - Description: Create a new customer in the database.
 
@@ -85,7 +87,7 @@ Without Docker:
 
 ### 2. Create Insurance Quote
 
-- Endpoint: http://localhost/api/v1/quote/
+- Endpoint: `http://localhost:8000/api/v1/quote/`
 - Method: POST
 - Description: Create an insurance quote for the customer.
 
@@ -96,31 +98,55 @@ Without Docker:
   "type": "personal-accident",
   "premium": 200,
   "cover": 200000,
-  "state": "new",
   "customer_id": 1
 }
 ```
 
-### 3. Search Customers/Policies
+### 3. List Policies
 
-- Search functionality is implemented within the Django admin panel. Customers can be searched by first name, last name, date of birth, type of policies. Policies can be searched by customer name and types.
+- Endpoint: `http://localhost:8000/api/v1/policies/`
+- Method: GET
+- Description: Return a list of policies for a given customer.
 
-### 4. Authentication Implementation
+### 4. Policy Details
+
+- Endpoint: `http://localhost:8000/api/v1/policies/{id}`
+- Method: GET
+- Description: Return detailed information about a given policy.
+
+### 5. Policy History
+
+- Endpoint: `http://localhost:8000/api/v1/policies/{id}/history`
+- Method: GET
+- Description: Return detailed history of 'state' field change of a given policy.
+
+### 6. Update Policy State
+
+- Endpoint: `http://localhost:8000/api/v1/quote/`
+- Method: PATCH
+- Description: Update 'state' of a policy.
+
+### Search Customers/Policies
+
+Search functionality is implemented within the Django admin panel. Customers can be searched by first name, last name, date of birth, type of policies. Policies can be searched by customer name and types.
+
+### Authentication Implementation
 
 My suggestion is to keep authentication for users (insurance companies) via Django's built-in authentication system, logging in through django admin interface.
-The authentication for customers (i.e. clients who wish to purchase an insurance) should be done with JWT or OAuth2. Both are easy to be integrated into Django app.
+The authentication for customers (i.e. clients who wish to purchase an insurance) should be done with JWT or OAuth2. Both are easy to be integrated into Django app and provide reliable and secure way to manage authentication.
 
 ### Additional functionality
 
-1. PEP8 compliance: all code is tested against PEP8 requirements.
-2. Security: code is checked by bandit framework for any potential security vulnerabilities.
-3. CI/CD: a pipeline consisting of build and test created and successfully implemented with Github Actions.
-4. API documentation and swagger: a swagger with examples and details is accessible at /api/v1/swagger and /api/v1/redoc.
-5. Docker: the app is dockerized, with creation of 2 containers: a PostgreSQL database and main Django container.
-6. Dev deployment: the code is successfully deployed for demonstration on AWS EC2 machine.
+1. **PEP8 compliance**: all code is tested against PEP8 requirements.
+2. **Security**: code is checked by bandit framework for any potential security vulnerabilities.
+3. **CI/CD**: a pipeline consisting of build and test created and successfully implemented with Github Actions.
+4. **API documentation**: a swagger with examples and details is accessible at /api/v1/swagger and /api/v1/redoc.
+5. **Docker**: the app is dockerized, with creation of 2 containers: a PostgreSQL database and main Django container.
+6. **Dev deployment**: the code is successfully deployed for demonstration on AWS EC2 machine.
+7. **Testing**: tests created with 100% coverage.
 
 ### Additional Notes
 
-Ensure Docker and Docker Compose are installed on your machine before running the application.
-For any questions or clarifications, feel free to reach out.
-Thank you for considering this submission!
+Ensure Docker and Docker Compose are installed on your machine before running the application.  
+For any questions or clarifications, feel free to reach out.  
+Thank you for considering my submission!
