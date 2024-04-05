@@ -70,6 +70,20 @@ class QuoteCreateViewTest(APITestCase):
             1
         )
 
+    def test_create_quote_invalid(self):
+        url = reverse('quote-create-update')
+        data = {
+            'customer': self.customer.id,
+            'premium': 100,
+            'cover': 100000,
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json(),
+            {'type': ['This field is required.']}
+        )
+
 
 class QuoteUpdateViewTest(APITestCase):
 
