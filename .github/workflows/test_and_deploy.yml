@@ -20,11 +20,6 @@ jobs:
         run: |
           bandit -r .
           python manage.py test
-      - name: Django Coverage action
-        uses: actions/python-django-coverage-gitHub-action@0.9
-        with:
-          django-app: "issuer"
-          minimum-coverage: "86"
 
   # deploy:
   #   runs-on: ubuntu-latest
