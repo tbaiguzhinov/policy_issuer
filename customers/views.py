@@ -16,13 +16,40 @@ class CustomerCreateView(CreateAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save()
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'first_name': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    example='John',
+                    description='First Name'
+                ),
+                'last_name': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    example='Doe',
+                    description='Last Name'
+                ),
+                'dob': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_DATE,
+                    example='01-01-2021',
+                    description='Date of Birth'
+                ),
+            }
+        )
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
 
 
 class QuoteView(GenericAPIView):
     queryset = Policy.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PolicyCreateSerializer
 
     @swagger_auto_schema(request_body=PolicyCreateSerializer)
     def post(self, request, *args, **kwargs):
@@ -74,6 +101,7 @@ class PolicyListView(ListAPIView):
 class PolicyDetailView(GenericAPIView):
     queryset = Policy.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PolicyListSeriazlier
 
     def get(self, request, *args, **kwargs):
         policy_id = kwargs.get('policy_id')

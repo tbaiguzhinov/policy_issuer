@@ -33,7 +33,8 @@ class Policy(models.Model):
     customer = models.ForeignKey(
         Customer,
         on_delete=models.CASCADE,
-        related_name='policies'
+        related_name='policies',
+        null=True,
     )
 
     policy_start_date = models.DateField(null=True, blank=True)

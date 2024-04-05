@@ -5,8 +5,14 @@ from customers.constants import POLICY_DURATION_DAYS
 from customers.models import Customer, Policy
 
 
+class CustomDateFormatField(serializers.DateField):
+    def to_representation(self, value):
+        return value.strftime('%m-%d-%Y')
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
+    dob = CustomDateFormatField(format='%m-%d-%Y', input_formats=['%m-%d-%Y'])
 
     class Meta:
         model = Customer
@@ -16,6 +22,15 @@ class CustomerSerializer(serializers.ModelSerializer):
 class PolicyCreateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     state = serializers.CharField(read_only=True)
+    customer_id = serializers.IntegerField(required=True)
+
+    def validate(self, attrs):
+        customer_id = attrs.get('customer_id')
+        try:
+            Customer.objects.get(id=customer_id)
+        except Customer.DoesNotExist:
+            raise serializers.ValidationError('Customer not found')
+        return super().validate(attrs)
 
     class Meta:
         model = Policy
@@ -25,7 +40,7 @@ class PolicyCreateSerializer(serializers.ModelSerializer):
             'premium',
             'cover',
             'state',
-            'customer'
+            'customer_id'
         ]
 
 
